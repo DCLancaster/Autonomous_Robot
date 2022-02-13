@@ -7,7 +7,7 @@ then
   # shellcheck disable=SC2035
   git add *
   git commit -m "pushed by script"
-  git push origin main
+  git push https://github.com/DCLancaster/Autonomous_Robot main
 else
   echo false
 fi
