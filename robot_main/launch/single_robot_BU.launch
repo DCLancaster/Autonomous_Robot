@@ -1,0 +1,32 @@
+<launch>
+  <arg name="RV" default="True"/>
+  <arg name="SLAM" default="True"/>
+  <arg name="NAV" default="True"/>
+  <arg name="rviz" default="NAV"/>
+  <param name="/use_sim_time" value="true"/>
+
+  <!-- RVIZ Launcher: -->
+  <group if="$(eval arg('RV') == True)">
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find robot_main)/config/rviz_config_SLAM.rviz" />
+  </group>
+
+  <!-- NAV Launchers: -->
+  <group if="$(eval arg('NAV') == True)">
+    <!--<include file="$(find robot_main)/launch/amcl.launch"/> -->
+    <include file="$(find robot_main)/launch/move_base.launch"/>
+  </group>
+
+  <!-- SLAM Launcher: -->
+  <group if="$(eval arg('SLAM') == True)">
+    <include file="$(find robot_main)/launch/Gmapping_Single.launch">
+    </include>
+  </group>
+  <group if="$(eval arg('SLAM') == False)">
+    <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
+    args="0.0 0.0 0. 0.0 0.0  0.0 /map /odom 5" />
+  </group>
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link"
+  args="0.0 0.0 0.0 0.0 0.0  0.0 /base_footprint /base_link 5" />
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
+    args="0.0 0.0 0.0 0.0 0.0  0.0 /base_link /base_scan 5" />
+</launch>

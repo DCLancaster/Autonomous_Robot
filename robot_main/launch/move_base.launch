@@ -1,0 +1,28 @@
+<launch>
+  <arg name="no_static_map" default="false"/>
+  <!--doc to be changed below-->
+  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="base_global_planner" default="base_local_planner/TrajectoryPlannerROS" doc="base_local_planner/TrajectoryPlannerROS, navfn/NavfnROS, dwa_local_planner/DWAPlannerROS"/>
+  <arg name="base_local_planner" default="base_local_planner/TrajectoryPlannerROS" doc="base_local_planner/TrajectoryPlannerROS, navfn/NavfnROS, dwa_local_planner/DWAPlannerROS"/>
+  <arg name="cmd_vel_topic" default="/cmd_vel" />
+  <arg name="odom_topic" default="odom" />
+  <arg name="move_forward_only" default="false"/>
+
+  <!-- move_base -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <param name="base_local_planner" value="$(arg base_local_planner)" />
+
+    <!-- The common parameter files are currently unused and empty -->
+    <rosparam file="$(find robot_main)/config/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find robot_main)/config/costmap_common.yaml" command="load" ns="local_costmap" />
+
+    <rosparam file="$(find robot_main)/config/costmap_global.yaml" command="load" />
+    <rosparam file="$(find robot_main)/config/costmap_local.yaml" command="load" />
+
+    <rosparam file="$(find robot_main)/config/TrajectoryPlannerROS.yaml" command="load" />
+    <!--<rosparam file="$(find robot_main)/config/DWAPlannerROS.yaml" command="load" />-->
+
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
+    <remap from="odom" to="$(arg odom_topic)"/>
+  </node>
+</launch>

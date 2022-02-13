@@ -1,0 +1,24 @@
+<launch>
+  <arg name="robot_name" default="owrick"/>
+  
+  <!-- NAV Launchers:-->
+  <include file="$(find robot_main)/launch/move_base.launch">
+    <arg name="cmd_vel_topic" default="$(arg robot_name)/cmd_vel" />
+    <arg name="odom_topic" default="$(arg robot_name)_tf/odom" />
+  </include>
+  <!-- SLAM Launcher: -->
+  <include file="$(find robot_main)/launch/Gmapping.launch">
+    <arg name="scan_topic" default="$(arg robot_name)/scan"/>
+    <arg name="robot_name" default="$(arg robot_name)"/>
+    <arg name="multi" default="True"/>
+  </include>
+  
+  
+  <!-- TF -->
+  <node pkg="tf" type="static_transform_publisher" name="base_footprint_to_base_link"
+  args="0.0 0.0 0.0  0.0 0.0 0.0 $(arg robot_name)_tf/base_footprint /$(arg robot_name)_tf/base_link 5" />
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
+  args="0.0 0.0 0.0  0.0 0.0 0.0 $(arg robot_name)_tf/base_link /$(arg robot_name)_tf/base_scan 5" />
+
+
+</launch>
